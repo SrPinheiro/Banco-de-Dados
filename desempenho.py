@@ -3,7 +3,6 @@ import io
 import pandas as pd
 import uuid
 
-# Segundo bucket:
 bucket_s = BucketService(bucket_name="desempenho_alunos")
 
 def etapa1():
@@ -72,7 +71,6 @@ def etapa3():
 
     for i in range(len(tables)):
         salvarParquet(tables[i], f"{tnames[i]}/{tnames[i]}.parquet")
-
 
 def etapa4():
     id_dataset =  'desempenho_alunos'

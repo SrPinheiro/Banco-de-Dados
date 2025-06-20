@@ -3,8 +3,7 @@ import io
 import pandas as pd
 import uuid
 
-# Segundo bucket:
-bucket_s = BucketService(bucket_name=" bucket-para-enem")
+bucket_s = BucketService(bucket_name="bucket-para-enem")
 
 def etapa1():
     bucket_s.upload_file('dados/microdados_enem.csv', 'bronze/csv/microdados_enem.csv')
@@ -15,11 +14,7 @@ def etapa2():
 def etapa3():
     arquivos_b = list(bucket_s.listar_arquivos('bronze/parquet/'))
 
-    gender = {}
-    grades = {}
-    races = {}
-    locales = {}
-    school_types = {}
+    states = {}
 
     def getDataId(value, dicionario):
         dataID = dicionario.get(value, None)
@@ -44,16 +39,29 @@ def etapa3():
         blob_bytes = blob.download_as_bytes()
         parquet = pd.read_parquet(io.BytesIO(blob_bytes))
         
-        students = parquet[['NU_INSCRICAO', 'TP_FAIXA_ETARIA', 'TP_SEXO', 'TP_NACIONALIDADE', 'SG_UF_ESC', 'TP_COR_RACA', 'TP_LOCALIZACAO_ESCOLA', 'TP_ESCOLA']].copy()
+        colStudents = ['NU_INSCRICAO', 'TP_FAIXA_ETARIA', 'TP_SEXO', 'TP_NACIONALIDADE', 'SG_UF_ESC']
+        colStates = ['SG_UF_ESC']
+        colScore = ['NU_INSCRICAO', 'NU_NOTA_CN',"NU_NOTA_CH","NU_NOTA_LC","NU_NOTA_MT","NU_NOTA_REDACAO" ]
         
-
-
-
+        parquet.dropna(subset=[*colStudents, *colStates, *colScore], inplace=True)
+        
+        students = parquet[colStudents].copy()
+        students['STATE_ID'] = parquet['SG_UF_ESC'].apply(lambda x: getDataId(x, states))
+        score = parquet[colScore].copy()
+        
+        salvarParquet(students, f"students/students{i + 1}.parquet")
+        salvarParquet(score, f"score/score{i + 1}.parquet")
+        
+        
+        
+    dfStates = pd.DataFrame(list(states.items()), columns=['Name', 'Id'])
+    salvarParquet(dfStates, f"states/states.parquet")
+    
 def etapa4():
-    id_dataset =  'desempenho_alunos'
+    id_dataset =  'enem_2023_gold'
     bucket_s.to_bigQuery(id_dataset)
     
 
 if __name__ == "__main__":
-    etapa3()
+    # etapa3()
     etapa4()
