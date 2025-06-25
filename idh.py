@@ -30,7 +30,10 @@ def etapa3():
         blob_bytes = blob.download_as_bytes()
         parquet = pd.read_parquet(io.BytesIO(blob_bytes))
         
-        salvarParquet(parquet, f"idh/idh_{i + 1}.parquet")
+        tabela_idh = parquet[["UF","IDH"]]
+        tabela_idh.rename(columns={"UF": "estados", "IDH": "idh"}, inplace=True)
+
+        salvarParquet(tabela_idh, f"idh/idh_{i + 1}.parquet")
 
 def etapa4():
     id_dataset = 'idh_ibge'
