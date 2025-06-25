@@ -102,7 +102,7 @@ class BucketService:
 
             job_config = bigquery.LoadJobConfig(
                 source_format=bigquery.SourceFormat.PARQUET,
-                write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE 
+                write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE
             )
             
             load_job = bigquery_client.load_table_from_uri(

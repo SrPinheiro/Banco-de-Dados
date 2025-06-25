@@ -39,7 +39,7 @@ def etapa3():
         blob_bytes = blob.download_as_bytes()
         parquet = pd.read_parquet(io.BytesIO(blob_bytes))
         
-        colStudents = ['NU_INSCRICAO', 'TP_FAIXA_ETARIA', 'TP_SEXO', 'TP_NACIONALIDADE', 'SG_UF_ESC']
+        colStudents = ['NU_INSCRICAO', 'TP_FAIXA_ETARIA', 'TP_SEXO', 'TP_NACIONALIDADE', 'TP_ESCOLA']
         colStates = ['SG_UF_ESC']
         colScore = ['NU_INSCRICAO', 'NU_NOTA_CN',"NU_NOTA_CH","NU_NOTA_LC","NU_NOTA_MT","NU_NOTA_REDACAO" ]
         
@@ -63,5 +63,5 @@ def etapa4():
     
 
 if __name__ == "__main__":
-    # etapa3()
+    etapa3()
     etapa4()
