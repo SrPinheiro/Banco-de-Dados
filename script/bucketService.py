@@ -45,7 +45,7 @@ class BucketService:
         print(f"Arquivos em: {self.bucket_name}/{rota}")
         return self.client.list_blobs(self.bucket_name, prefix=rota)
 
-    def csv_to_parquet(self, file_path, output_path=None, chunk_size=50000, separador=';'):
+    def csv_to_parquet(self, file_path, output_path=None, chunk_size=50000, separador=';', encoding='latin1'):
         print(f"Convertendo {file_path} de CSV para Parquet")
         
         if output_path is None:
@@ -57,8 +57,8 @@ class BucketService:
         blob = self.bucket.blob(file_path)
         
         chunk_number = 0
-        with blob.open("r", encoding='latin1') as csv_file:
-            arquivo_df = pd.read_csv(csv_file, sep=separador, encoding='latin1', chunksize=chunk_size)
+        with blob.open("r", encoding=encoding) as csv_file:
+            arquivo_df = pd.read_csv(csv_file, sep=separador, encoding=encoding, chunksize=chunk_size)
             for chunk_df in arquivo_df:
                 chunk_number += 1
                 parquet_buffer = io.BytesIO()
